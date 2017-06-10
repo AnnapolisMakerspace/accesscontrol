@@ -1,2 +1,4 @@
 ---
-- include: deploy_code.yml
+- include: install_packages.yml
+#- include: setup_environment.yml
+- include: deploy_application.yml
