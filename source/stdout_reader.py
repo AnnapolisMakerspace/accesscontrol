@@ -3,6 +3,8 @@
 import signal
 import time
 
+#import zmq.green as zmq
+#import zmq
 from pirc522 import RFID
 
 
@@ -20,12 +22,12 @@ try:
 
     while True:
 
-        print("\n\nstarted, waiting for tag...")
+        #print("\n\nstarted, waiting for tag...")
 
         # Wait for tag
         rdr.wait_for_tag()
 
-        print("read tag, checking for error...")
+        #print("read tag, checking for error...")
         # Request tag
         (error, data) = rdr.request()
 
@@ -34,22 +36,23 @@ try:
             continue
 
         elif not error:
-            print("\nDetected!")
+            print("")
+            #print("\nDetected!")
 
-            print("running anti-collision...")
+            #print("running anti-collision...")
             (error, uid) = rdr.anticoll()
 
             if not error:
                 # Print UID
-                print("Card read UID: {}  --  (raw UID: {})"
+                print("ACCESS REQUEST: {}  --  (raw UID: {})"
                       .format("".join(map(str, uid)), uid))
 
                 # Let's see what do we have in whole tag
-                print("setting tag in util...")
-                util.set_tag(uid)
+                #print("setting tag in util...")
+                #util.set_tag(uid)
                 
-                print("calling auth()...")
-                util.auth(rdr.auth_b, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
+                #print("calling auth()...")
+                #util.auth(rdr.auth_b, [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF])
                 
                 # Save authorization info (key B) to util.
                 # It doesn't call RFID.card_auth(), that's called when needed
@@ -102,8 +105,8 @@ try:
                 # We must stop crypto
                 util.deauth()
                 
-                input("\n(press enter to continue.)\n\n")
-                #time.sleep(1)
+                #input("\n(press enter to continue.)\n\n")
+                time.sleep(0.5)
                 
 
 except KeyboardInterrupt as e:
