@@ -8,7 +8,7 @@
     - common
 
 - name: configure and deploy the webservers and application code
-  hosts: all
+  hosts: system-controllers
   remote_user: pi
   roles:
     - system-controller
