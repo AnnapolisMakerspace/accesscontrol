@@ -1,0 +1,10 @@
+
+- name: update apt caches and install packages
+  apt: pkg={{ item }} state=present
+  become: true
+  with_items:
+    - python3
+    - git
+    - python3-pip
+    - jq
+  tags: apt

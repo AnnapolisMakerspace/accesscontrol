@@ -1,0 +1,60 @@
+---
+
+- name: create syscon user
+  become: true
+  user:
+    name: syscon
+    password: "helloworld"
+    state: present
+    shell: /bin/bash
+    update_password: always
+
+- name: create log dir for syscon
+  become: true
+  file:    
+    dest: /var/log/syscon
+    state: directory
+    owner: syscon
+    group: syscon
+
+    
+# - name: create python3 virtualenv base directory
+#   file:
+#     path: "/home/syscon/"
+#     state: directory
+
+
+# - name: create python3 venv
+#   become: true
+#   pip:
+#     virtualenv: /home/syscon/system-controller-venv
+#     virtualenv_command: /usr/bin/python3.4 -m venv
+#     name:
+#       - py-rc522
+#       - pyzmq
+
+
+# - name: create python3 venv using pyvenv
+#   shell: "python3 -m venv /home/syscon/system-controller-venv --without-pip"
+#   tags:
+#     - python3
+
+# - name: manually install pip from whl in new venv
+#   environment:
+#     PATH: "/home/syscon/system-controller-venv/bin"
+#   args:
+#     chdir: "/cots/python3"
+#   shell: python pip-6.1.1-py2.py3-none-any.whl/pip install --no-index pip-6.1.1-py2.py3-none-any.whl
+#   tags:
+#     - python3
+
+# - name: "pip install setuptools for {{ virtualenv }}"
+#   remote_user: syscon
+#   pip:
+#     name: "{{ remote_install_directory }}/cots/python3/setuptools-15.2-py2.py3-none-any.whl"
+#     state: present
+#     executable: "{{ virtualenv }}/bin/pip"    
+#   tags:
+#     - python3
+
+    

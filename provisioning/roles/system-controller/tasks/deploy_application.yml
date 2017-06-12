@@ -1,0 +1,27 @@
+---
+# These tasks are responsible for copying the latest dev/production code from
+# the version control system.
+
+- name: remove temporary build directory
+  file:
+    path: "/tmp/build"
+    state: absent
+  tags: deploy-source
+  
+- name: remove temporary build directory
+  file:
+    path: "/tmp/build"
+    state: directory
+  tags: deploy-source    
+    
+- name: Copy the code from repository
+  git:
+    repo: "{{ repository }}"
+    dest: "/tmp/build"
+    depth: 1
+    #version: "{{ release_version }}"    
+  tags: deploy-source
+
+- name: move source into install location
+  command: mv "/tmp/build" "/home/syscon/system-controller"
+  tags: deploy-source  
