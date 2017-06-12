@@ -8,10 +8,13 @@ WILD_APRICOT_API_KEY=$1
 # Usage:
 # $ get_contacts.sh $API_KEY > /path/to/contact_data.json
 
+# TODO: correctly handle non-200 responses as errors (ie, don't write the
+#       error response to a file)
+
 
 # Interacting with the WildApricot API is not terribly convenient.
 # This isn't necessarily a bad thing, but if you're unfamiliar
-# OAuth tokens it may seems as though there are a number of
+# OAuth tokens it may seem as though there are a number of
 # hoops that we need to jump through.
 
 # Let's begin:
@@ -25,8 +28,6 @@ b64key=$(echo "APIKEY:${WILD_APRICOT_API_KEY}" | base64)
 # in this case, we're also going to limit the scope of the
 # token we're requesting, to "contacts_view" only:
 req_data='grant_type=client_credentials&scope=contacts_view'
-
-
 auth_resp=$(curl -s \
 	-H "Authorization: Basic $b64key" \
 	-d $req_data \
