@@ -1,0 +1,28 @@
+
+
+(relayboard) JD-VCC: +5V (external PS)
+(relayboard) GND: GND (external PS)
+
+(relayboard) VCC: +3.3V (rpi)
+(relayboard) 1: GPIO 17 (for example) (rpi)
+(relayboard) 2:
+(relayboard) 3:
+(relayboard) 4:
+
+
+>>>
+import RPi.GPIO as gpio
+
+gpio.setmode(gpio.BCM)
+
+gpio.setup(17, gpio.OUT)
+
+gpio.output(17, gpio.HIGH)
+gpio.output(17, gpio.LOW)
+...
+... etc.
+
+
+gpio.cleanup()
+
+
