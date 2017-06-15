@@ -12,7 +12,11 @@ Preliminary "System Controller" internal schema:
 
 Bill of Materials for Physical Device:
 
-- 2 x Raspberry Pi 3
+- 1 x Raspberry Pi 3
+- 1 x Raspberry Pi case
+  - [amazon](https://www.amazon.com/Eleduino-Raspberry-Model-Acrylic-Enclosure/dp/B01CQRROLW/ref=pd_sim_147_17?_encoding=UTF8&pd_rd_i=B01CQRROLW&pd_rd_r=KFT5HR4HTWFZKAF1GW40&pd_rd_w=Dl2CY&pd_rd_wg=kQhCi&psc=1&refRID=KFT5HR4HTWFZKAF1GW40)
+- 1 x micro SD card
+  - [amazon](https://www.amazon.com/Samsung-Class-Adapter-MB-MG16EA-AM/dp/B014W1ZL3S/ref=sr_1_16?s=pc&ie=UTF8&qid=1497537903&sr=1-16&refinements=p_n_feature_two_browse-bin%3A6518303011)
 - 1 x 2 channel relay module
   - this board is opto-isolated and requires 20 ma
   - [amazon](https://www.amazon.com/dp/B00E0NTPP4)
