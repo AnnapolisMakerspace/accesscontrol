@@ -1,0 +1,11 @@
+[Unit]
+Description=RFID Scanner Service
+After=network.target
+ 
+[Service]
+ExecStart=/home/pi/source/scanner/scanner.py
+Restart=always
+ 
+[Install]
+WantedBy=multi-user.target
+Alias=scanner.service

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+python_env_exe=${1:-"/home/syscon/system-controller-venv/bin/python"}
+module=${2:-"/home/pi/source/relay_controller/relay_controller.py"}
+
+exec ${python_env_exe} ${module} \
+	 --listen_connection "tcp://127.0.0.1:5555" \
+	 --relay_gpio_pin 17
+	 
