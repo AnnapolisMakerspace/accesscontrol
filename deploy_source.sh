@@ -17,6 +17,6 @@ ssh $syscon_host -C "cd ${remote_root} ; \
     tar -xzvf ${source_tarball} ; \
     rm ${source_tarball}"
 
-ssh $syscon_host -C "cd ${remote_root} ; \
-    tar -xzvf ${source_tarball} ; \
-    rm ${source_tarball}"
+# ssh $syscon_host -C "cd ${remote_root} ; \
+#     tar -xzvf ${source_tarball} ; \
+#     rm ${source_tarball}"
