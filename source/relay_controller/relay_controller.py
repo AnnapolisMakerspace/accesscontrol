@@ -16,15 +16,27 @@ def setup_gpio(gpio_bcm_pin_number):
     gpio.output(gpio_bcm_pin_number, gpio.HIGH)
 
 
-def activate_relay(gpio_pin, seconds=5):
+def timed_activate_relay(gpio_pin, seconds=5):
     """
-    this should be async. (it's synchronous right now, but this
-    isn't scalable for handling multiple concurrent operations 
-    and/or long running operations on a relay.)
+    synchronously activate relay for specified time (in seconds).
     """
     gpio.output(gpio_pin, gpio.LOW)
     time.sleep(seconds)
     gpio.output(gpio_pin, gpio.HIGH)
+    return None
+
+
+def set_relay_state(gpio_pin, state=None):
+    """
+    """
+
+    if state == "activate":
+        gpio.output(gpio_pin, gpio.LOW)
+        
+    elif state == "deactivate":
+        gpio.output(gpio_pin, gpio.HIGH)
+    
+    return None
     
     
 def base_process_message(raw_message, gpio_pin=None):
@@ -37,10 +49,14 @@ def base_process_message(raw_message, gpio_pin=None):
         message["seconds"] is not None and
         0 < message["seconds"] <= 5):
         
-        activate_relay(gpio_pin, message["seconds"])
+        timed_activate_relay(gpio_pin, message["seconds"])
+
+    elif ("command" in message and
+          message["command"] in ["activate", "deactivate"]):
+        set_relay_state(gpio_pin, state=message["command"])
         
     else:
-        activate_relay(gpio_pin)
+        timed_activate_relay(gpio_pin)
         
     return json.dumps({"status": "OK"})    
 

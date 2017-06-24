@@ -41,7 +41,26 @@ def setup_gpio(gpio_bcm_pin_number):
 #     else:
 #         activate_relay(gpio_pin)
         
-#     return json.dumps({"status": "OK"})    
+#     return json.dumps({"status": "OK"})
+
+
+def base_send_command(command, req_socket):
+    request = {"command": command}
+    
+    serial_request = json.dumps(request)
+    
+    logger.info("sending REQ: {0}".format(serial_request))
+    
+    req_socket.send(serial_request.encode())
+    
+    raw_message = socket.recv().decode()
+    
+    logger.info("Received REP: {0}".format(raw_message))
+    try:
+        return json.loads(raw_message)
+    except Exception as e:
+        logger.error(e)
+        return None
 
 
 if __name__ == '__main__':
@@ -49,7 +68,7 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(usage=None, description=description)
     parser.add_argument("--pub_endpoint", type=str,
-                        default="tcp://127.0.0.1:5557",
+                        default="tcp://127.0.0.1:5555",
                         help=("end point this module will bind to, and "
                               "publish/announce button presses"))
 
@@ -62,16 +81,16 @@ if __name__ == '__main__':
     
     # Bind to the service endpoint:
     context = zmq.Context()
-    socket = context.socket(zmq.PUB)
-    socket.bind(args.pub_endpoint)
+    socket = context.socket(zmq.REQ)
+    socket.connect(args.pub_endpoint)
 
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     logger.info("starting up.  using GPIO pio: {}"
                 .format(args.button_gpio_pin))
-    # process_message = partial(base_process_message,
-    #                           gpio_pin=args.relay_gpio_pin)
+    send_command = partial(base_send_command,
+                           req_socket=socket)
     while True:
         logger.debug('setting up GPIO on pin: {}...'
                      .format(args.button_gpio_pin))
@@ -88,13 +107,15 @@ if __name__ == '__main__':
                     continue
                 
                 elif input_state == True:
-                    print('Button Up')
+                    logger.info('Button Up')
                     current_state = input_state
+                    send_command("deactivate")
                     continue
                     
                 elif input_state == False:
-                    print('Button Down')                    
+                    logger.info('Button Down')                    
                     current_state = input_state
+                    send_command("activate")
                     continue                    
                 
                 # raw_message = socket.recv().decode()
