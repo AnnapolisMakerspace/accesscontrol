@@ -1,0 +1,11 @@
+[Unit]
+Description=Door Button Service
+After=network.target
+ 
+[Service]
+ExecStart=/home/pi/source/door_button/door_button
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=door_button.service

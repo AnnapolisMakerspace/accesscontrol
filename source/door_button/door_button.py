@@ -44,31 +44,19 @@ def setup_gpio(gpio_bcm_pin_number):
 #     return json.dumps({"status": "OK"})
 
 
-def base_send_command(command, req_socket):
-    request = {"command": command}
+def base_publish_event(command, pub_socket):
+    event = {"event": command}
+    serial_event = json.dumps(event)
+    logger.info("publishing event: {0}".format(serial_event))    
+    pub_socket.send(serial_event.encode())
     
-    serial_request = json.dumps(request)
-    
-    logger.info("sending REQ: {0}".format(serial_request))
-    
-    req_socket.send(serial_request.encode())
-    
-    raw_message = socket.recv().decode()
-    
-    logger.info("Received REP: {0}".format(raw_message))
-    try:
-        return json.loads(raw_message)
-    except Exception as e:
-        logger.error(e)
-        return None
-
 
 if __name__ == '__main__':
     description = ""
     
     parser = argparse.ArgumentParser(usage=None, description=description)
     parser.add_argument("--pub_endpoint", type=str,
-                        default="tcp://127.0.0.1:5555",
+                        default="tcp://127.0.0.1:5557",
                         help=("end point this module will bind to, and "
                               "publish/announce button presses"))
 
@@ -81,16 +69,16 @@ if __name__ == '__main__':
     
     # Bind to the service endpoint:
     context = zmq.Context()
-    socket = context.socket(zmq.REQ)
-    socket.connect(args.pub_endpoint)
+    socket = context.socket(zmq.PUB)
+    socket.bind(args.pub_endpoint)
 
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     logger.info("starting up.  using GPIO pio: {}"
                 .format(args.button_gpio_pin))
-    send_command = partial(base_send_command,
-                           req_socket=socket)
+    publish_event = partial(base_publish_event,
+                            pub_socket=socket)
     while True:
         logger.debug('setting up GPIO on pin: {}...'
                      .format(args.button_gpio_pin))
@@ -109,20 +97,15 @@ if __name__ == '__main__':
                 elif input_state == True:
                     logger.info('Button Up')
                     current_state = input_state
-                    send_command("deactivate")
+                    publish_event("ButtonUp")
                     continue
                     
                 elif input_state == False:
                     logger.info('Button Down')                    
                     current_state = input_state
-                    send_command("activate")
+                    publish_event("ButtonDown")
                     continue                    
                 
-                # raw_message = socket.recv().decode()
-                # logger.info("Received REQ: {0}".format(raw_message))
-                # reply = process_message(raw_message)
-                # logger.info("Sending REP: {0}".format(reply))
-                # socket.send_string(reply)
 
         # need to handle graceful shutdown in here.                
         # except <Graceful Shutdown Event/Exception> as e:

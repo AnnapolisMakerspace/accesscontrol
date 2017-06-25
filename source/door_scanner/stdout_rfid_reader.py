@@ -8,6 +8,9 @@ import time
 from pirc522 import RFID
 
 
+def octet_to_string(ot):
+    return "0"*(3 - len(str(ot))) + str(ot)
+
 rdr = RFID()
 util = rdr.util()
 
@@ -17,6 +20,8 @@ util.debug = False
 
 
 print("starting up, entering main loop...")
+
+
 
 try:
 
@@ -32,11 +37,11 @@ try:
         (error, data) = rdr.request()
 
         if error:
-            print("e", sep="", end="")
+            #print("e", sep="", end="")
             continue
 
         elif not error:
-            print("")
+            #print("")
             #print("\nDetected!")
 
             #print("running anti-collision...")
@@ -45,7 +50,7 @@ try:
             if not error:
                 # Print UID
                 print("ACCESS REQUEST: {}  --  (raw UID: {})"
-                      .format("".join(map(str, uid)), uid))
+                      .format("".join(map(octet_to_string, uid)), uid))
 
                 # Let's see what do we have in whole tag
                 #print("setting tag in util...")

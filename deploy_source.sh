@@ -1,7 +1,7 @@
 
 
 source_root=${2:-"source"}
-syscon_host=${2:-"zerow"}
+syscon_host=${2:-"ac"}
 remote_root=${3:-"/home/pi/"}
 
 
