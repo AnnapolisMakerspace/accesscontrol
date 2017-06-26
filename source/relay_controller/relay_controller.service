@@ -1,0 +1,11 @@
+[Unit]
+Description=Relay Controller Service
+After=network.target
+ 
+[Service]
+ExecStart=/home/pi/source/relay_controller/relay_controller
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=relay_controller.service

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+python_env_exe=${1:-"/home/syscon/system-controller-venv/bin/python"}
+module=${2:-"/home/pi/source/door_button/door_button.py"}
+
+exec ${python_env_exe} ${module} \
+	 --pub_endpoint "tcp://127.0.0.1:5557" \
+	 --button_gpio_pin 18
+	 
