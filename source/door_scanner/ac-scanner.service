@@ -3,9 +3,9 @@ Description=RFID Scanner Service
 After=network.target
  
 [Service]
-ExecStart=/home/pi/source/scanner/scanner.py
+ExecStart=/home/pi/source/door_scanner/ac_scanner
 Restart=always
  
 [Install]
 WantedBy=multi-user.target
-Alias=scanner.service
+Alias=door_scanner.service

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+python_env_exe=${1:-"/home/syscon/system-controller-venv/bin/python"}
+module=${2:-"/home/pi/source/door_scanner/scanner.py"}
+
+exec ${python_env_exe} ${module} \
+	 --pub_endpoint "tcp://127.0.0.1:5556"
+	 

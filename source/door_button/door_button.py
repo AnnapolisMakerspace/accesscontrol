@@ -13,39 +13,10 @@ import zmq
 def setup_gpio(gpio_bcm_pin_number):
     gpio.setmode(gpio.BCM)
     gpio.setup(gpio_bcm_pin_number, gpio.IN, pull_up_down=gpio.PUD_UP)
-    
-
-# def activate_relay(gpio_pin, seconds=5):
-#     """
-#     this should be async. (it's synchronous right now, but this
-#     isn't scalable for handling multiple concurrent operations 
-#     and/or long running operations on a relay.)
-#     """
-#     gpio.output(gpio_pin, gpio.LOW)
-#     time.sleep(seconds)
-#     gpio.output(gpio_pin, gpio.HIGH)
-    
-    
-# def base_process_message(raw_message, gpio_pin=None):
-#     message = json.loads(raw_message)
-
-#     # the bounds checking here is just so we don't "brick" the process
-#     # for, say, 1000 days, these values shouldn't be hard-coded like this
-#     # but should probably be configured elsewhere and passed in.
-#     if ("seconds" in message and
-#         message["seconds"] is not None and
-#         0 < message["seconds"] <= 5):
-        
-#         activate_relay(gpio_pin, message["seconds"])
-        
-#     else:
-#         activate_relay(gpio_pin)
-        
-#     return json.dumps({"status": "OK"})
 
 
-def base_publish_event(command, pub_socket):
-    event = {"event": command}
+def base_publish_event(event, pub_socket):
+    event = {"event": event}
     serial_event = json.dumps(event)
     logger.info("publishing event: {0}".format(serial_event))    
     pub_socket.send(serial_event.encode())

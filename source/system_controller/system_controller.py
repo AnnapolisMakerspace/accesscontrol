@@ -5,6 +5,15 @@ import json
 import zmq
 
 
+def base_send_command(command, pub_socket):
+    command = {"command": command}
+    serial_command = json.dumps(command)
+    logger.info("publishing command: {0}".format(serial_command))    
+    pub_socket.send(serial_command.encode())
+    
+
+
+
 if __name__ == '__main__':
     description = "testing req/rep"
     
