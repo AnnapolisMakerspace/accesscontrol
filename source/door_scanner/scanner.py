@@ -3,6 +3,7 @@ import logging
 import signal
 import time
 import argparse
+import json
 
 #import zmq.green as zmq
 import zmq
@@ -61,8 +62,12 @@ if __name__ == '__main__':
 
                 if not collision_error:
                     # Print UID
+                    pretty_uid = "".join(map(str, uid))
                     logger.info("ACCESS REQUEST: {}  --  (raw UID: {})"
-                                .format("".join(map(str, uid)), uid))
+                                .format(pretty_uid, uid))
+
+                    req = {"rfid": pretty_uid}
+                    socket.send(json.dumps(req).encode())
 
                     # stop crypto:
                     util.deauth()
