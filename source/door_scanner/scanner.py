@@ -19,6 +19,10 @@ util = rdr.util()
 util.debug = False
 
 
+def make_pretty_uid(uid):    
+    return "".join( list( ("0"*(3-len(str(x))) + str(x) for x in uid ) ) )
+
+
 if __name__ == '__main__':
 
     description = "Access Control Door Scanner"    
@@ -62,7 +66,12 @@ if __name__ == '__main__':
 
                 if not collision_error:
                     # Print UID
-                    pretty_uid = "".join(map(str, uid))
+                    
+                    pretty_uid = "".join(
+                        map(lambda x: "0"*(3-len(str(x))) + str(x), 
+                            uid)
+                    )
+                    
                     logger.info("ACCESS REQUEST: {}  --  (raw UID: {})"
                                 .format(pretty_uid, uid))
 

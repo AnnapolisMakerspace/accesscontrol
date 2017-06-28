@@ -36,7 +36,7 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
 
-    context = zmq.Context()
+    ctx = zmq.Context()
     
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
@@ -45,17 +45,22 @@ if __name__ == '__main__':
 
     #  Socket to talk to server
     logger.info("setting up sockets...\n\n")
-    relay_sock = context.socket(zmq.REQ)
+    relay_sock = ctx.socket(zmq.REQ)
     relay_sock.connect(args.relay_controller)
 
-    scanner_sock = context.socket(zmq.SUB)
+    scanner_sock = ctx.socket(zmq.SUB)
     scanner_sock.setsockopt_string(zmq.SUBSCRIBE, "")
+    scanner_sock.setsockopt(zmq.RCVHWM, 0)
     scanner_sock.connect(args.door_scanner)
 
-    button_sock = context.socket(zmq.SUB)
+    button_sock = ctx.socket(zmq.SUB)
     button_sock.setsockopt_string(zmq.SUBSCRIBE, "")
+    button_sock.setsockopt(zmq.RCVHWM, 0)
     button_sock.connect(args.door_button)
 
+
+    # this should be req/rep from the user_data service:
+    # (due to time constraints we're doing it this way for now)
     user_rfids = []
     logger.info("using file: {}".format(args.user_data_file))
     with open(args.user_data_file) as f:
@@ -64,7 +69,7 @@ if __name__ == '__main__':
             if line.get("rfid"):
                 user_rfids.append(line["rfid"])
                 
-    #logger.info("user rfids: {}".format(user_rfids))
+    logger.info("user rfids: {}".format(user_rfids))
     
     while True:
 
@@ -74,14 +79,21 @@ if __name__ == '__main__':
         mess = json.loads(raw_mess)
         
         if mess.get("rfid") in user_rfids:
+
+            logger.info("rfid: {} in users, activating relay"
+                        .format(mess.get("rfid")))
+            
             ################################
-            # close relay:
-            request = {"seconds": 1}
+            # close relay for 2 seconds:
+            # (TODO: use ~button~ here)
+            request = {"seconds": 2}
             serial_request = json.dumps(request)
-            logger.info("sending REQ: {0}".format(serial_request))
+            logger.info("sending REQ to door relay: {0}"
+                        .format(serial_request))
             relay_sock.send(serial_request.encode())
             raw_message = relay_sock.recv().decode()
-            logger.info("\nReceived REP: {0}".format(raw_message))
+            logger.info("received REP from door relay: {0}"
+                        .format(raw_message))
 
 
         
