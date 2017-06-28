@@ -8,9 +8,10 @@ ${user_data_dir}/get_contacts.sh '<---redacted--->' | \
 
 if ! cmp ams_user_data ams_user_data.tmp;
 then
-	echo "differ!"
+	echo "files differ, updates have been made to wildapricot users..."
 	mv ${user_data_dir}/ams_user_data.tmp ${user_data_dir}/ams_user_data
 	chown pi:pi ${user_data_dir}/ams_user_data
+	sudo systemctl restart system_controller.service
 fi
 
 rm ${user_data_dir}/ams_user_data.tmp
