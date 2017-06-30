@@ -1,0 +1,12 @@
+#!/bin/bash
+
+python_env_exe=${1:-"/home/syscon/system-controller-venv/bin/python"}
+module=${2:-"/home/pi/source/system_controller/system_controller.py"}
+
+exec ${python_env_exe} ${module} \
+    --relay_controller "tcp://127.0.0.1:5555" \
+    --door_scanner "tcp://127.0.0.1:5556" \
+    --door_button "tcp://127.0.0.1:5557" \
+	--user_data_file "/home/pi/source/user_data/ams_user_data"
+
+	 

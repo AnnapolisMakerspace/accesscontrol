@@ -13,10 +13,13 @@ tar -zcvf $source_tarball ${source_root}/*
 
 scp $source_tarball ${syscon_host}:/${remote_root}
 
+rm $source_tarball
+
 ssh $syscon_host -C "cd ${remote_root} ; \
     tar -xzvf ${source_tarball} ; \
     rm ${source_tarball}"
 
+# # ensure modules' .system files are copied into place:
 # ssh $syscon_host -C "cd ${remote_root} ; \
-#     tar -xzvf ${source_tarball} ; \
-#     rm ${source_tarball}"
+#     ; \
+#     "

@@ -1,0 +1,11 @@
+[Unit]
+Description=System Controller Service
+After=network.target
+ 
+[Service]
+ExecStart=/home/pi/source/system_controller/system_controller
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=system_controller.service

@@ -1,10 +1,12 @@
 
-
+import logging
 import signal
 import time
+import argparse
+import json
 
-import zmq.green as zmq
-#import zmq
+#import zmq.green as zmq
+import zmq
 
 from pirc522 import RFID
 
@@ -17,101 +19,74 @@ util = rdr.util()
 util.debug = False
 
 
-
-
-    while True:
-
-        #print("\n\nstarted, waiting for tag...")
-
-        # Wait for tag
-        rdr.wait_for_tag()
-
-        #print("read tag, checking for error...")
-        # Request tag
-        (error, data) = rdr.request()
-
-        if error:
-            #print("e", sep="", end="")
-            continue
-
-        elif not error:
-            #print("")
-            #print("\nDetected!")
-
-            #print("running anti-collision...")
-            (collision_error, uid) = rdr.anticoll()
-
-            if not collision_error:
-                # Print UID
-                print("ACCESS REQUEST: {}  --  (raw UID: {})"
-                      .format("".join(map(str, uid)), uid))
-
-                # stop crypto:
-                util.deauth()
-                
-                #input("\n(press enter to continue.)\n\n")
-                time.sleep(0.5)
-                
-
-
-
+def make_pretty_uid(uid):    
+    return "".join( list( ("0"*(3-len(str(x))) + str(x) for x in uid ) ) )
 
 
 if __name__ == '__main__':
 
-    print("starting up...")
-    
     description = "Access Control Door Scanner"    
     parser = argparse.ArgumentParser(usage=None, description=description)
 
     parser.add_argument("--pub_endpoint", type=str,
                         default="tcp://127.0.0.1:5556")
     args = parser.parse_args()
-        
+
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)    
+    logger.info("parsed args, starting up...")
+    
     context = zmq.Context()
 
     #  Socket to talk to server
-    print("setting up PUB socket...\n\n")
+    logger.info("setting up PUB socket on : {}".format(args.pub_endpoint))
     socket = context.socket(zmq.PUB)
     socket.bind(args.pub_endpoint)
 
-    
-try:
+    try:    
+        while True:
+            #print("\n\nstarted, waiting for tag...")
+            # Wait for tag
+            rdr.wait_for_tag()
 
-    while True:
-        #print("\n\nstarted, waiting for tag...")
-        # Wait for tag
-        rdr.wait_for_tag()
+            #print("read tag, checking for error...")
+            # Request tag
+            (error, data) = rdr.request()
 
-        #print("read tag, checking for error...")
-        # Request tag
-        (error, data) = rdr.request()
+            if error:
+                #print("e", sep="", end="")
+                continue
 
-        if error:
-            #print("e", sep="", end="")
-            continue
+            elif not error:
+                #print("")
+                #print("\nDetected!")
 
-        elif not error:
-            #print("")
-            #print("\nDetected!")
+                #print("running anti-collision...")
+                (collision_error, uid) = rdr.anticoll()
 
-            #print("running anti-collision...")
-            (collision_error, uid) = rdr.anticoll()
+                if not collision_error:
+                    # Print UID
+                    
+                    pretty_uid = "".join(
+                        map(lambda x: "0"*(3-len(str(x))) + str(x), 
+                            uid)
+                    )
+                    
+                    logger.info("ACCESS REQUEST: {}  --  (raw UID: {})"
+                                .format(pretty_uid, uid))
 
-            if not collision_error:
-                # Print UID
-                print("ACCESS REQUEST: {}  --  (raw UID: {})"
-                      .format("".join(map(str, uid)), uid))
+                    req = {"rfid": pretty_uid}
+                    socket.send(json.dumps(req).encode())
 
-                # stop crypto:
-                util.deauth()
-                
-                #input("\n(press enter to continue.)\n\n")
-                time.sleep(0.5)
-                
+                    # stop crypto:
+                    util.deauth()
 
-except KeyboardInterrupt as e:
-    print("cleaning up GPIO...")
-    rdr.cleanup()
-    print("done.")
-    exit(0)
+                    #input("\n(press enter to continue.)\n\n")
+                    time.sleep(0.5)
+
+
+    except Exception as e:
+        logger.error(e)
+        logger.error("cleaning up GPIO...")
+        rdr.cleanup()
+        raise
