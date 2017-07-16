@@ -17,7 +17,22 @@
     owner: syscon
     group: syscon
 
-    
+- name: Copy the requirements.txt file to remote host
+  copy: src=../files/requirements.txt dest=/tmp/requirements.txt
+  tags:
+    - requirements
+
+- name: create system-controller venv & install requirements.txt
+  become: true
+  become_method : sudo
+  pip:
+    requirements: /tmp/requirements.txt
+    virtualenv: /home/syscon/system-controller-venv
+    virtualenv_command: /usr/bin/python3.4 -m venv
+  tags:
+    - requirements
+
+
 # - name: create python3 virtualenv base directory
 #   file:
 #     path: "/home/syscon/"

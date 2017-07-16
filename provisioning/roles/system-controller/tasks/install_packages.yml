@@ -1,3 +1,9 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
 
 - name: update apt caches and install packages
   apt: pkg={{ item }} state=present
@@ -7,4 +13,5 @@
     - git
     - python3-pip
     - jq
+    - python3.4-venv
   tags: apt

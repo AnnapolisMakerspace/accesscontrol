@@ -1,0 +1,4 @@
+pi-rc522==2.2.1
+pyzmq==16.0.2
+RPi.GPIO==0.6.3
+spidev==3.2

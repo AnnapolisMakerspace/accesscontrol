@@ -11,6 +11,18 @@
     path: "/tmp/build"
     state: directory
   tags: deploy-source    
+
+- name: remove existing build directory
+  file:
+    path: "/home/syscon/system-controller"
+    state: absent
+  tags: deploy-source
+  
+- name: remove existing build directory
+  file:
+    path: "/home/syscon/system-controller"
+    state: directory
+  tags: deploy-source  
     
 - name: Copy the code from repository
   git:
@@ -21,5 +33,7 @@
   tags: deploy-source
 
 - name: move source into install location
-  command: mv "/tmp/build" "/home/syscon/system-controller"
+  become: true
+  become_method : sudo
+  command: mv "/tmp/build/source" "/home/syscon/system-controller/source"
   tags: deploy-source  
