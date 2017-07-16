@@ -82,8 +82,13 @@ if __name__ == '__main__':
                     util.deauth()
 
                     #input("\n(press enter to continue.)\n\n")
-                    time.sleep(0.5)
+                    time.sleep(5)
 
+
+    except KeyboardInterrupt as e:
+        logger.error(e)
+        logger.error("cleaning up GPIO...")
+        rdr.cleanup()
 
     except Exception as e:
         logger.error(e)
