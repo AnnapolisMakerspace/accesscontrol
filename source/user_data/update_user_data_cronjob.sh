@@ -11,6 +11,7 @@ then
 	echo "files differ, updates have been made to wildapricot users..."
 	mv ${user_data_dir}/ams_user_data.tmp ${user_data_dir}/ams_user_data
 	chown pi:pi ${user_data_dir}/ams_user_data
+	echo "new user file in place, restarting system_controller service"
 	sudo systemctl restart system_controller.service
 fi
 
