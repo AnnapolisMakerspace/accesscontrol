@@ -14,6 +14,5 @@ jq_expression=$(join_by '' ${pretty_jq_expression})
 
 while read l;
 do
-	echo $l | \
-		jq -c -r ${jq_expression}
+	echo -e ${l} | jq -c -r ${jq_expression}
 done

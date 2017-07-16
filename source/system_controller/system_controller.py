@@ -21,19 +21,20 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(usage=None, description=description)
 
-    parser.add_argument("--relay_controller", type=str,
-                        default="tcp://127.0.0.1:5555")
+    parser.add_argument("--relay_controller", type=str)
 
-    parser.add_argument("--door_scanner", type=str,
-                        default="tcp://127.0.0.1:5556")
+    parser.add_argument("--door_scanner", type=str)
 
-    parser.add_argument("--door_button", type=str,
-                        default="tcp://127.0.0.1:5557")
+    parser.add_argument("--door_button", type=str)
 
+    # this "user data file" should NOT be passed in here.
+    # the system_controller module should be
+    # requesting/querying the user_data_service for user
+    # information.  This works for now because we only have
+    # a single dimension identifying users (ie, the UUID of
+    # an rfid tag)
     parser.add_argument("--user_data_file", type=str)
                         
-    
-    
     args = parser.parse_args()
 
     ctx = zmq.Context()
